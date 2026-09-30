@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7f4">
+  <title>Punjab AQI | Access</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="Punjab AQI home">
+      <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Punjab <b>AQI</b></span>
+    </a>
+    <span class="office">ENVIRONMENTAL MONITORING CENTER <span>·</span> EPA PUNJAB</span>
+  </header>
+  <main class="login-wrap">
+    <section class="upload-panel login-panel">
+      <p class="eyebrow">RESTRICTED ACCESS <span></span></p>
+      <h1 class="login-title">Enter<br><em>access code.</em></h1>
+      {% if error %}<div class="notice error" role="alert">{{ error }}</div>{% endif %}
+      <form action="{{ url_for('login') }}" method="post">
+        <label class="login-label" for="access-code">ACCESS CODE</label>
+        <input class="access-input" id="access-code" name="access_code" type="password" autocomplete="current-password" required autofocus>
+        <button class="generate-button" type="submit"><span>Continue</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+      </form>
+    </section>
+  </main>
+  <footer class="footer">
+    <span>DIRECTORATE OF ENVIRONMENTAL MONITORING CENTER</span>
+    <span class="footer-right">PUNJAB <i></i> PAKISTAN</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7f4">
+  <title>Punjab AQI | Weekly Report</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="Punjab AQI home">
+      <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Punjab <b>AQI</b></span>
+    </a>
+    <span class="office">ENVIRONMENTAL MONITORING CENTER <span>·</span> EPA PUNJAB</span>
+  </header>
+
+  <main class="workspace">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">WEEKLY REPORT DESK <span></span></p>
+      <h1 id="page-title">Air quality,<br><em>made clear.</em></h1>
+      <p class="intro-copy">Generate a district-by-district Punjab AQI report from your hourly data.</p>
+      <div class="week-note"><span class="note-dot"></span><span>Automatic range: latest 7 days in the file</span></div>
+    </section>
+
+    <section class="upload-panel" aria-label="Report generator">
+      <div class="panel-head">
+        <span class="step-number">01</span>
+        <div>
+          <h2>Prepare report</h2>
+          <p>CSV input <span class="required">REQUIRED</span></p>
+        </div>
+      </div>
+
+      {% if error %}
+      <div class="notice error" role="alert">{{ error }}</div>
+      {% endif %}
+
+      {% if result %}
+      <div class="notice success" role="status">
+        <span class="success-icon" aria-hidden="true">✓</span>
+        <div><strong>Your report is ready</strong><span>Both files were generated successfully.</span></div>
+      </div>
+      <div class="downloads">
+        <a class="download-link pdf-link" href="{{ url_for('download', job_id=result.job_id, file_kind='pdf') }}">
+          <span class="file-icon" aria-hidden="true">PDF</span>
+          <span><b>Weekly AQI report</b><small>{{ result.pdf_name }}</small></span>
+          <span class="download-arrow" aria-hidden="true">↓</span>
+        </a>
+        <a class="download-link sheet-link" href="{{ url_for('download', job_id=result.job_id, file_kind='excel') }}">
+          <span class="file-icon" aria-hidden="true">XLS</span>
+          <span><b>Report statistics</b><small>{{ result.excel_name }}</small></span>
+          <span class="download-arrow" aria-hidden="true">↓</span>
+        </a>
+      </div>
+      <a class="another-link" href="/">Generate another report <span aria-hidden="true">↗</span></a>
+      {% else %}
+      <form id="report-form" action="{{ url_for('generate') }}" method="post" enctype="multipart/form-data">
+        <label class="dropzone" for="csv-file">
+          <input id="csv-file" name="csv_file" type="file" accept=".csv,text/csv" required>
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4.5 15.5v3A1.5 1.5 0 006 20h12a1.5 1.5 0 001.5-1.5v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="drop-title" id="file-title">Choose a CSV file</span>
+          <span class="drop-subtitle" id="file-subtitle">or drop it here <b>·</b> up to 100 MB</span>
+        </label>
+
+        <div class="form-row">
+          <label for="week-start">Week starts <span>OPTIONAL</span></label>
+          <input id="week-start" name="week_start" type="date">
+        </div>
+
+        <button class="generate-button" type="submit">
+          <span>Generate weekly report</span>
+          <span class="button-arrow" aria-hidden="true">↗</span>
+        </button>
+        <p class="privacy-note"><span aria-hidden="true">◈</span> Each upload is processed in a separate job.</p>
+      </form>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>DIRECTORATE OF ENVIRONMENTAL MONITORING CENTER</span>
+    <span class="footer-right">PUNJAB <i></i> PAKISTAN</span>
+  </footer>
+
+  <script>
+    const form = document.querySelector('#report-form');
+    const fileInput = document.querySelector('#csv-file');
+    const dropzone = document.querySelector('.dropzone');
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        document.querySelector('#file-title').textContent = file ? file.name : 'Choose a CSV file';
+        document.querySelector('#file-subtitle').textContent = file
+          ? `${(file.size / 1024 / 1024).toFixed(2)} MB · ready to process`
+          : 'or drop it here · up to 100 MB';
+      });
+      dropzone.addEventListener('dragover', event => {
+        event.preventDefault();
+        dropzone.classList.add('is-dragging');
+      });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragging'));
+      dropzone.addEventListener('drop', event => {
+        event.preventDefault();
+        dropzone.classList.remove('is-dragging');
+        if (event.dataTransfer.files.length) {
+          fileInput.files = event.dataTransfer.files;
+          fileInput.dispatchEvent(new Event('change'));
+        }
+      });
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('.generate-button');
+        button.disabled = true;
+        button.querySelector('span').textContent = 'Generating report…';
+        form.classList.add('is-processing');
+      });
+    }
+  </script>
+</body>
+</html>
