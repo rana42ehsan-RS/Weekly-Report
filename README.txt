@@ -18,27 +18,14 @@ WEB APP (upload a CSV and download the reports)
   3. Upload one CSV and select Generate report.
   Each upload is processed in its own folder under output/web_jobs.
 
-FREE HOSTING (PythonAnywhere Beginner; no card)
-  1. Create a free Beginner account at pythonanywhere.com. It provides one public
-    web app at <username>.pythonanywhere.com and does not ask for a payment card.
-  2. In a Bash console, clone this public repository and install the dependencies:
-       git clone https://github.com/rana42ehsan-RS/Weekly-Report.git
-       cd Weekly-Report
-       mkvirtualenv --python=python3.13 aqi-report
-       pip install --no-cache-dir -r requirements.txt
-  3. In the Web tab, add a web app using Manual Configuration and Python 3.13.
-     Set its virtualenv to /home/<username>/.virtualenvs/aqi-report.
-  4. Open the generated WSGI configuration file and replace its Flask section with:
-       import sys
-       path = "/home/<username>/Weekly-Report"
-       if path not in sys.path:
-           sys.path.insert(0, path)
-       from app import app as application
-     Replace <username> with the account username, then save and reload the web app.
-  The site is public. The free account has limited storage/resources and restricted
-  outbound internet; this app processes uploads locally and does not need outbound
-  internet. Uploads are limited to 100 MB, and generated downloads are cleaned up
-  after 24 hours when another report is generated. Do not use it for sensitive data.
+FREE HOSTING (Streamlit Community Cloud; no card)
+  1. Sign in to share.streamlit.io with GitHub.
+  2. Create an app from rana42ehsan-RS/Weekly-Report, branch main, with
+     streamlit_app.py as the main file. Keep the app public so everyone can use it.
+  The app runs on Community Cloud's free resources. It accepts CSV uploads up to
+  100 MB; generated reports are temporary and are not durable storage. Do not use
+  it for sensitive data. Community Cloud may sleep or restart apps and has resource
+  limits; report generation time depends on the input size.
 
 EVERY WEEK
     1. Copy the hourly station export(s) or district-average dashboard CSV into raw_data/
