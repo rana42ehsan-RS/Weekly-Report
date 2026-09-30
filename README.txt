@@ -18,18 +18,27 @@ WEB APP (upload a CSV and download the reports)
   3. Upload one CSV and select Generate report.
   Each upload is processed in its own folder under output/web_jobs.
 
-FREE HOSTING (Render)
-  1. Create a public GitHub repository and add this project. Include shapefiles/
-    and assets/; raw_data/ and output/ are intentionally excluded by .gitignore.
-  2. In Render, choose New > Blueprint and connect that repository. Render reads
-    render.yaml and creates the free, publicly accessible web service. Do not set
-    AQI_ACCESS_CODE if everyone should be able to use the app without logging in.
-    If a Render service already has AQI_ACCESS_CODE set, remove it in the service's
-    Environment settings and redeploy.
-  Free Render services sleep when idle and have temporary storage. Source CSVs
-  are deleted after processing; generated downloads are retained up to 24 hours.
-  A free service may take about a minute to wake. Anyone can upload files up to
-  100 MB, so do not use it for sensitive data or workloads that need abuse protection.
+FREE HOSTING (PythonAnywhere Beginner; no card)
+  1. Create a free Beginner account at pythonanywhere.com. It provides one public
+    web app at <username>.pythonanywhere.com and does not ask for a payment card.
+  2. In a Bash console, clone this public repository and install the dependencies:
+       git clone https://github.com/rana42ehsan-RS/Weekly-Report.git
+       cd Weekly-Report
+       mkvirtualenv --python=python3.13 aqi-report
+       pip install --no-cache-dir -r requirements.txt
+  3. In the Web tab, add a web app using Manual Configuration and Python 3.13.
+     Set its virtualenv to /home/<username>/.virtualenvs/aqi-report.
+  4. Open the generated WSGI configuration file and replace its Flask section with:
+       import sys
+       path = "/home/<username>/Weekly-Report"
+       if path not in sys.path:
+           sys.path.insert(0, path)
+       from app import app as application
+     Replace <username> with the account username, then save and reload the web app.
+  The site is public. The free account has limited storage/resources and restricted
+  outbound internet; this app processes uploads locally and does not need outbound
+  internet. Uploads are limited to 100 MB, and generated downloads are cleaned up
+  after 24 hours when another report is generated. Do not use it for sensitive data.
 
 EVERY WEEK
     1. Copy the hourly station export(s) or district-average dashboard CSV into raw_data/
